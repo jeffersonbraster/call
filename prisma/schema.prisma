@@ -20,6 +20,7 @@ model User {
 
   accounts      Account[]
   sessions      Session[]
+  timeIntervals UserTimeInterval[]
 
   @@map("users")
 }
@@ -53,6 +54,19 @@ model Session {
   user         User     @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
   @@map("sessions")
+}
+
+model UserTimeInterval {
+  id         String @id @default(uuid())
+  week_day   Int
+  time_start_in_minutes Int
+  time_end_in_minutes Int
+
+  user_id String
+
+  user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+
+  @@map("user_time_intervals")
 }
 
 
