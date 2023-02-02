@@ -22,7 +22,7 @@ import { Container, Header } from '../styles'
 import { FormAnnotation, ProfileBox } from './styles'
 
 const updateProfileSchema = z.object({
-  bio: z.string().min(10).max(400),
+  bio: z.string().max(400),
 })
 
 type UpdateProfileData = z.infer<typeof updateProfileSchema>
@@ -66,6 +66,7 @@ export default function UpdateProfile() {
           <Avatar
             src={session.data?.user.avatar_url}
             alt={session.data?.user.name}
+            referrerPolicy="no-referrer"
           />
         </label>
 
