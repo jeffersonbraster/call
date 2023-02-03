@@ -19,15 +19,16 @@ export default async function handler(
   }
 
   const user = await prisma.user.findUnique({
-    where: { username },
+    where: {
+      username,
+    },
   })
 
   if (!user) {
-    return res.status(400).json({ message: 'User not found' })
+    return res.status(400).json({ message: 'User does not exist.' })
   }
 
   const referenceDate = dayjs(String(date))
-
   const isPastDate = referenceDate.endOf('day').isBefore(new Date())
 
   if (isPastDate) {
@@ -51,8 +52,8 @@ export default async function handler(
   const endHour = time_end_in_minutes / 60
 
   const possibleTimes = Array.from({ length: endHour - startHour }).map(
-    (_, index) => {
-      return startHour + index
+    (_, i) => {
+      return startHour + i
     },
   )
 
@@ -70,9 +71,13 @@ export default async function handler(
   })
 
   const availableTimes = possibleTimes.filter((time) => {
-    return !blockedTimes.some(
+    const isTimeBlocked = blockedTimes.some(
       (blockedTime) => blockedTime.date.getHours() === time,
     )
+
+    const isTimeInPast = referenceDate.set('hour', time).isBefore(new Date())
+
+    return !isTimeBlocked && !isTimeInPast
   })
 
   return res.json({ possibleTimes, availableTimes })

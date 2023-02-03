@@ -36,7 +36,7 @@ export const TimePicker = styled('div', {
   width: 280,
 })
 
-export const TimeHeader = styled(Text, {
+export const TimePickerHeader = styled(Text, {
   fontWeight: '$medium',
 
   span: {

@@ -43,17 +43,16 @@ export default async function handler(
 
   const blockedDatesRaw: Array<{ date: number }> = await prisma.$queryRaw`
     SELECT
-      EXTRACT(DAY FROM s.date) AS date,
-      COUNT(s.date) as amount,
-      ((uti.time_end_in_minutes - uti.time_start_in_minutes) / 60) AS size
-    FROM schedulings s
-    LEFT JOIN user_time_intervals uti ON uti.week_day = WEEKDAY(DATE_ADD(s.date, INTERVAL 1 DAY)))
-    WHERE s.user_id = ${user.id}
-      AND DATE_FORMAT(s.date, '%Y-%m') = ${`${year}-${month}`}
-
-    GROUP BY EXTRACT(DAY FROM s.date),
-      ((uti.time_end_in_minutes - uti.time_start_in_minutes) / 60)
-
+      EXTRACT(DAY FROM S.DATE) AS date,
+      COUNT(S.date) AS amount,
+      ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60) AS size
+    FROM schedulings S
+    LEFT JOIN user_time_intervals UTI
+      ON UTI.week_day = WEEKDAY(DATE_ADD(S.date, INTERVAL 1 DAY))
+    WHERE S.user_id = ${user.id}
+      AND DATE_FORMAT(S.date, "%Y-%m") = ${`${year}-${month}`}
+    GROUP BY EXTRACT(DAY FROM S.DATE),
+      ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60)
     HAVING amount >= size
   `
 
